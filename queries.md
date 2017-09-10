@@ -26,7 +26,7 @@
 
 Narzędzie do tworzenia zapytań baz danych w Laravel zapewnia wygodny, płynny interfejs do tworzenia i uruchamiania zapytań bazodanowych. Może być on użyty  wykonywania większości operacji bazodanowych w twojej aplikacji i współdziała ze wszystkimi rodzajami baz.
 
-Konstruktor kwerend w Laravel używa PDO parameter binding do zabezpieczania twojej aplikacji przed atakami SQL injection. Nie ma potrzeby dodatkowego filtrowania ciągów znaków przekazywanych jako  wiazania.
+Konstruktor kwerend w Laravel używa PDO parameter binding do zabezpieczania twojej aplikacji przed atakami SQL injection. Nie ma potrzeby dodatkowego filtrowania ciągów znaków przekazywanych jako  wiązania.
 
 <a name="retrieving-results"></a>
 ## Pobieranie wyników
@@ -115,13 +115,14 @@ Możesz zatrzymac przetwarzanie kolejnych partii zwracajac `false` w obrzarze `C
 <a name="aggregates"></a>
 ### Agregacje
 
-The query builder also provides a variety of aggregate methods such as `count`, `max`, `min`, `avg`, and `sum`. You may call any of these methods after constructing your query:
+Narzędzie budowania zapytań zawiera również wiele różnych metod agregujących, takich jak `count`, `max`, `min`, `avg`, i `sum`. You may call any of these methods after constructing your query:
+Możesz odwoływać sie do nich kolejno, zaraz po stworzeniu swojego zapytania:
 
     $users = DB::table('users')->count();
 
     $price = DB::table('orders')->max('price');
 
-Of course, you may combine these methods with other clauses:
+Oczywiście, możesz użyć kombinacji tych metod w połączeniu z innymi warunakmi:
 
     $price = DB::table('orders')
                     ->where('finalized', 1)
@@ -132,7 +133,7 @@ Of course, you may combine these methods with other clauses:
 
 #### Specifying A Select Clause
 
-Oczywiscie ty nie zawsze możesz chcieć pobierać wszytkie kolumny z tabeli w bazie. Używając metody `select`, możesz określać własne klauzule `select` dla swoich zapytań:
+Oczywiscie nie zawsze możesz chcieć pobierać wszytkie kolumny z tabeli w bazie. Używając metody `select`, możesz określać własne klauzule `select` dla swoich zapytań:
 
     $users = DB::table('users')->select('name', 'email as user_email')->get();
 
@@ -140,16 +141,16 @@ Metoda `distinct`pozwoli ci wymusić zapytanie, które zwróci odpowiednio przef
 
     $users = DB::table('users')->distinct()->get();
 
-If you already have a query builder instance and you wish to add a column to its existing select clause, you may use the `addSelect` method:
+Jeśłi masz już instancję konstuktora zapytań i ższczysz sobie dodać kolejną kolumnę do obecnego zapytania, możesz użyć meody `addSelect`:
 
     $query = DB::table('users')->select('name');
 
     $users = $query->addSelect('age')->get();
 
 <a name="raw-expressions"></a>
-## Raw Expressions
+## Wyrażenia modyfikujące
 
-Sometimes you may need to use a raw expression in a query. These expressions will be injected into the query as strings, so be careful not to create any SQL injection points! To create a raw expression, you may use the `DB::raw` method:
+Czasami możesz potrzebować zwodyfikować domyłśne zapytanie używając wyrażenia modyfikujacego. Takie wyrażenie może zostać wstrzyknięte do twojego zapytania jako ciąg znaków, zatem upewnij się czy nie tworzysz potencjalnego punktu dla SQL injection! Aby wykorzystać takie wyrażenie, skorzystaj z metody `DB::raw`:
 
     $users = DB::table('users')
                          ->select(DB::raw('count(*) as user_count, status'))
