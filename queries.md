@@ -1,4 +1,4 @@
-# Database: Query Builder
+# Bazy danych: Konstruktor zapytań
 
 - [Wprowadzenie](#introduction)
 - [Pobieranie wyników](#retrieving-results)
@@ -6,19 +6,19 @@
     - [Agregacje](#aggregates)
 - [Selects](#selects)
 - [Wyrażenia modyfikujące](#raw-expressions)
-- [Joins](#joins)
-- [Unions](#unions)
-- [Where Clauses](#where-clauses)
-    - [Parameter Grouping](#parameter-grouping)
+- [Łączenie (Join)](#joins)
+- [Scalanie (Union)](#unions)
+- [Klauzule ograniczajace (Where)](#where-clauses)
+    - [Grupowanie Parametrów](#parameter-grouping)
     - [Where Exists Clauses](#where-exists-clauses)
     - [JSON Where Clauses](#json-where-clauses)
-- [Ordering, Grouping, Limit, & Offset](#ordering-grouping-limit-and-offset)
-- [Conditional Clauses](#conditional-clauses)
-- [Inserts](#inserts)
-- [Updates](#updates)
+- [Sortowanie, Grupowanie, Limity i Offsety](#ordering-grouping-limit-and-offset)
+- [Klauzule Warunkowe](#conditional-clauses)
+- [Dodanie (Insert)](#inserts)
+- [Aktualizacja (Updates)](#updates)
     - [Updating JSON Columns](#updating-json-columns)
     - [Increment & Decrement](#increment-and-decrement)
-- [Deletes](#deletes)
+- [Usuwanie (Delete)](#deletes)
 - [Pessimistic Locking](#pessimistic-locking)
 
 <a name="introduction"></a>
@@ -496,7 +496,7 @@ You may pass another Closure as the third parameter to the `when` method. This C
 
 
 <a name="inserts"></a>
-## Dodanie (insert)
+## Dodanie (Insert)
 
 The query builder also provides an `insert` method for inserting records into the database table. The `insert` method accepts an array of column names and values:
 
@@ -522,7 +522,7 @@ If the table has an auto-incrementing id, use the `insertGetId` method to insert
 > {note} When using PostgreSQL the `insertGetId` method expects the auto-incrementing column to be named `id`. If you would like to retrieve the ID from a different "sequence", you may pass the sequence name as the second parameter to the `insertGetId` method.
 
 <a name="updates"></a>
-## Aktualizacja (updates)
+## Aktualizacja (Updates)
 
 Of course, in addition to inserting records into the database, the query builder can also update existing records using the `update` method. The `update` method, like the `insert` method, accepts an array of column and value pairs containing the columns to be updated. You may constrain the `update` query using `where` clauses:
 
@@ -559,7 +559,7 @@ You may also specify additional columns to update during the operation:
     DB::table('users')->increment('votes', 1, ['name' => 'John']);
 
 <a name="deletes"></a>
-## Usuwanie (delete)
+## Usuwanie (Delete)
 
 The query builder may also be used to delete records from the table via the `delete` method. You may constrain `delete` statements by adding `where` clauses before calling the `delete` method:
 
