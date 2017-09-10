@@ -5,7 +5,7 @@
     - [Porcjowanie wyników](#chunking-results)
     - [Agregacje](#aggregates)
 - [Selects](#selects)
-- [Raw Expressions](#raw-expressions)
+- [Wyrażenia modyfikujące](#raw-expressions)
 - [Joins](#joins)
 - [Unions](#unions)
 - [Where Clauses](#where-clauses)
@@ -26,14 +26,14 @@
 
 Narzędzie do tworzenia zapytań baz danych w Laravel zapewnia wygodny, płynny interfejs do tworzenia i uruchamiania zapytań bazodanowych. Może być on użyty  wykonywania większości operacji bazodanowych w twojej aplikacji i współdziała ze wszystkimi rodzajami baz.
 
-Konstruktor kwerend w Laravel używa PDO parameter binding do zabezpieczania twojej aplikacji przed atakami SQL injection. Nie ma potrzeby dodatkowego filtrowania ciągów znaków przekazywanych jako  wiązania.
+Konstruktor zapytań w Laravel używa PDO parameter binding do zabezpieczania twojej aplikacji przed atakami SQL injection. Nie ma potrzeby dodatkowego filtrowania ciągów znaków przekazywanych jako  wiązania.
 
 <a name="retrieving-results"></a>
 ## Pobieranie wyników
 
 #### Pobieranie Wszystkich Wierszy Z Tabeli
 
-Możesz użyć metody `table` na fasadzie `DB` do stworzenia początkowego zapytania. Metoda `table` method zwraca instancję konstruktora kwerend dla danej tabeli, pozwalajać dowiązać ci więcej elementów precyzujących zapytanie, aby finalnie uzyskac wynik przy użyciu metody `get`:
+Możesz użyć metody `table` na fasadzie `DB` do stworzenia początkowego zapytania. Metoda `table` method zwraca instancję konstruktora zapytań dla danej tabeli, pozwalajać dowiązać ci więcej elementów precyzujących zapytanie, aby finalnie uzyskac wynik przy użyciu metody `get`:
 
     <?php
 
@@ -159,9 +159,9 @@ Czasami możesz potrzebować zwodyfikować domyłśne zapytanie używając wyra�
                          ->get();
 
 <a name="joins"></a>
-## Joins
+## Łączenie (Join)
 
-#### Inner Join Clause
+#### Złączenia
 
 The query builder may also be used to write join statements. To perform a basic "inner join", you may use the `join` method on a query builder instance. The first argument passed to the `join` method is the name of the table you need to join to, while the remaining arguments specify the column constraints for the join. Of course, as you can see, you can join to multiple tables in a single query:
 
@@ -171,7 +171,7 @@ The query builder may also be used to write join statements. To perform a basic 
                 ->select('users.*', 'contacts.phone', 'orders.price')
                 ->get();
 
-#### Left Join Clause
+#### Lewostronne Złączenia
 
 If you would like to perform a "left join" instead of an "inner join", use the `leftJoin` method. The `leftJoin` method has the same signature as the `join` method:
 
@@ -179,7 +179,7 @@ If you would like to perform a "left join" instead of an "inner join", use the `
                 ->leftJoin('posts', 'users.id', '=', 'posts.user_id')
                 ->get();
 
-#### Cross Join Clause
+#### Krzyżowe Łączenie
 
 To perform a "cross join" use the `crossJoin` method with the name of the table you wish to cross join to. Cross joins generate a cartesian product between the first table and the joined table:
 
@@ -187,7 +187,7 @@ To perform a "cross join" use the `crossJoin` method with the name of the table 
                 ->crossJoin('colours')
                 ->get();
 
-#### Advanced Join Clauses
+#### Zaawansowałe Łączenia
 
 You may also specify more advanced join clauses. To get started, pass a `Closure` as the second argument into the `join` method. The `Closure` will receive a `JoinClause` object which allows you to specify constraints on the `join` clause:
 
@@ -207,9 +207,9 @@ If you would like to use a "where" style clause on your joins, you may use the `
             ->get();
 
 <a name="unions"></a>
-## Unions
+## Scalanie (Union)
 
-The query builder also provides a quick way to "union" two queries together. For example, you may create an initial query and use the `union` method to union it with a second query:
+Konstruktor zapytań zapewnia łatwy sposób scalenie  wyników "dwóch" zapytań. Na przykład możesz utworzyć zapytanie początkowe i użyć metody `union`, aby scalić ją z drugim zapytaniem:
 
     $first = DB::table('users')
                 ->whereNull('first_name');
@@ -219,10 +219,10 @@ The query builder also provides a quick way to "union" two queries together. For
                 ->union($first)
                 ->get();
 
-> {tip} The `unionAll` method is also available and has the same method signature as `union`.
+> {Wskazówka} Metoda `unionAll` jest również dostępna i posiada taką samą sygnaturę jak `union`.
 
 <a name="where-clauses"></a>
-## Where Clauses
+## Klauzule ograniczajace (Where)
 
 #### Simple Where Clauses
 
@@ -257,7 +257,7 @@ You may also pass an array of conditions to the `where` function:
         ['subscribed', '<>', '1'],
     ])->get();
 
-#### Or Statements
+#### Operator lub (or)
 
 You may chain where constraints together as well as add `or` clauses to the query. The `orWhere` method accepts the same arguments as the `where` method:
 
@@ -266,7 +266,7 @@ You may chain where constraints together as well as add `or` clauses to the quer
                         ->orWhere('name', 'John')
                         ->get();
 
-#### Additional Where Clauses
+#### Dodatkowe kaluzule ograniczjące (where)
 
 **whereBetween**
 
@@ -360,7 +360,7 @@ The `whereColumn` method can also be passed an array of multiple conditions. The
                     ])->get();
 
 <a name="parameter-grouping"></a>
-### Parameter Grouping
+### Grupowanie Parametrów
 
 Sometimes you may need to create more advanced where clauses such as "where exists" clauses or nested parameter groupings. The Laravel query builder can handle these as well. To get started, let's look at an example of grouping constraints within parenthesis:
 
@@ -410,7 +410,7 @@ Laravel also supports querying JSON column types on databases that provide suppo
                     ->get();
 
 <a name="ordering-grouping-limit-and-offset"></a>
-## Ordering, Grouping, Limit, & Offset
+## Sortowanie, Grupowanie, Limity i Offsety
 
 #### orderBy
 
@@ -467,7 +467,7 @@ Alternatively, you may use the `limit` and `offset` methods:
                     ->get();
 
 <a name="conditional-clauses"></a>
-## Conditional Clauses
+## Klauzule Warunkowe
 
 Sometimes you may want clauses to apply to a query only when something else is true. For instance you may only want to apply a `where` statement if a given input value is present on the incoming request. You may accomplish this using the `when` method:
 
@@ -496,7 +496,7 @@ You may pass another Closure as the third parameter to the `when` method. This C
 
 
 <a name="inserts"></a>
-## Inserts
+## Dodanie (insert)
 
 The query builder also provides an `insert` method for inserting records into the database table. The `insert` method accepts an array of column names and values:
 
@@ -522,7 +522,7 @@ If the table has an auto-incrementing id, use the `insertGetId` method to insert
 > {note} When using PostgreSQL the `insertGetId` method expects the auto-incrementing column to be named `id`. If you would like to retrieve the ID from a different "sequence", you may pass the sequence name as the second parameter to the `insertGetId` method.
 
 <a name="updates"></a>
-## Updates
+## Aktualizacja (updates)
 
 Of course, in addition to inserting records into the database, the query builder can also update existing records using the `update` method. The `update` method, like the `insert` method, accepts an array of column and value pairs containing the columns to be updated. You may constrain the `update` query using `where` clauses:
 
@@ -559,7 +559,7 @@ You may also specify additional columns to update during the operation:
     DB::table('users')->increment('votes', 1, ['name' => 'John']);
 
 <a name="deletes"></a>
-## Deletes
+## Usuwanie (delete)
 
 The query builder may also be used to delete records from the table via the `delete` method. You may constrain `delete` statements by adding `where` clauses before calling the `delete` method:
 
