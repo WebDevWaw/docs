@@ -26,7 +26,7 @@
 
 Laravel's database query builder provides a convenient, fluent interface to creating and running database queries. It can be used to perform most database operations in your application and works on all supported database systems.
 
-The Laravel query builder uses PDO parameter binding to protect your application against SQL injection attacks. There is no need to clean strings being passed as bindings.
+The Laravel konstruktor kwerend używa PDO parameter binding do zabezpieczania twojej aplikacji przez atalami SQL injection. There is no need to clean strings being passed as bindings.
 
 <a name="retrieving-results"></a>
 ## Retrieving Results
@@ -132,11 +132,11 @@ Of course, you may combine these methods with other clauses:
 
 #### Specifying A Select Clause
 
-Of course, you may not always want to select all columns from a database table. Using the `select` method, you can specify a custom `select` clause for the query:
+Oczywiscie ty nie zawsze możesz chcieć pobierać wszytkie kolumny z tabeli w bazie. Używając metody `select`, możesz określać własne klauzule `select` dla swoich zapytań:
 
     $users = DB::table('users')->select('name', 'email as user_email')->get();
 
-The `distinct` method allows you to force the query to return distinct results:
+Metoda `distinct`pozwoli ci wymusić zapytanie, które zwróci odpowiednio przefiltrowane wyniki:
 
     $users = DB::table('users')->distinct()->get();
 
