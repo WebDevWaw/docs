@@ -1,9 +1,9 @@
 # Database: Query Builder
 
-- [Introduction](#introduction)
-- [Retrieving Results](#retrieving-results)
-    - [Chunking Results](#chunking-results)
-    - [Aggregates](#aggregates)
+- [Wprowadzenie](#introduction)
+- [Pobieranie wyników](#retrieving-results)
+    - [Porcjowanie wyników](#chunking-results)
+    - [Agregacje](#aggregates)
 - [Selects](#selects)
 - [Raw Expressions](#raw-expressions)
 - [Joins](#joins)
@@ -22,18 +22,18 @@
 - [Pessimistic Locking](#pessimistic-locking)
 
 <a name="introduction"></a>
-## Introduction
+## Wprowadzenie
 
-Laravel's database query builder provides a convenient, fluent interface to creating and running database queries. It can be used to perform most database operations in your application and works on all supported database systems.
+Narzędzie do tworzenia zapytań baz danych w Laravel zapewnia wygodny, płynny interfejs do tworzenia i uruchamiania zapytań bazodanowych. Może być on użyty  wykonywania większości operacji bazodanowych w twojej aplikacji i współdziała ze wszystkimi rodzajami baz.
 
-The Laravel konstruktor kwerend używa PDO parameter binding do zabezpieczania twojej aplikacji przez atalami SQL injection. There is no need to clean strings being passed as bindings.
+Konstruktor kwerend w Laravel używa PDO parameter binding do zabezpieczania twojej aplikacji przed atakami SQL injection. Nie ma potrzeby dodatkowego filtrowania ciągów znaków przekazywanych jako  wiazania.
 
 <a name="retrieving-results"></a>
-## Retrieving Results
+## Pobieranie wyników
 
-#### Retrieving All Rows From A Table
+#### Pobieranie Wszystkich Wierszy Z Tabeli
 
-You may use the `table` method on the `DB` facade to begin a query. The `table` method returns a fluent query builder instance for the given table, allowing you to chain more constraints onto the query and then finally get the results using the `get` method:
+Możesz użyć metody `table` na fasadzie `DB` do stworzenia początkowego zapytania. Metoda `table` method zwraca instancję konstruktora kwerend dla danej tabeli, pozwalajać dowiązać ci więcej elementów precyzujących zapytanie, aby finalnie uzyskac wynik przy użyciu metody `get`:
 
     <?php
 
@@ -57,27 +57,27 @@ You may use the `table` method on the `DB` facade to begin a query. The `table` 
         }
     }
 
-The `get` method returns an `Illuminate\Support\Collection` containing the results where each result is an instance of the PHP `StdClass` object. You may access each column's value by accessing the column as a property of the object:
+Metoda `get` zwracana przez  `Illuminate\Support\Collection` zawiera wyniki, w których każdy jeden jest instancją obiektu PHP `StdClass`. Możesz mieć  dostęp do wartości każdej  kolumny, przez wskazanie kolumny jako właściwości obiektu:
 
     foreach ($users as $user) {
         echo $user->name;
     }
 
-#### Retrieving A Single Row / Column From A Table
+#### Pobieranie Pojedynczego Wiesza / Kolumny z Tabeli
 
-If you just need to retrieve a single row from the database table, you may use the `first` method. This method will return a single `StdClass` object:
+Jeżeli zwyczajnie potrzbujesz otrzymać pojedynczy wiesz danych z tabeli, możesz użyć metody `first`. Ta metoda zwróci pojedynczy obiekt `StdClass`:
 
     $user = DB::table('users')->where('name', 'John')->first();
 
     echo $user->name;
 
-If you don't even need an entire row, you may extract a single value from a record using the `value` method. This method will return the value of the column directly:
+Jeśli nawet nie potrzebujesz całego wiersza, możesz wyodrębnić pojedynczą wartość z rekordu przy użyciu metody `value`. Metoda ta zwróci bezpośrednio wartość wskazanej kolumny:
 
     $email = DB::table('users')->where('name', 'John')->value('email');
 
-#### Retrieving A List Of Column Values
+#### Pobieranie Listy Wartości Danej Kolumny
 
-If you would like to retrieve a Collection containing the values of a single column, you may use the `pluck` method. In this example, we'll retrieve a Collection of role titles:
+Jeśli chciałbyś pobrać kolekcję zawierającą wszystkie wartości jednej kolumny, możesz użyć metody `pluck`. W tym przykładzie otrzymamy kolekcję tytułów z wskazanej tabeli:
 
     $titles = DB::table('roles')->pluck('title');
 
@@ -85,7 +85,7 @@ If you would like to retrieve a Collection containing the values of a single col
         echo $title;
     }
 
- You may also specify a custom key column for the returned Collection:
+Możesz rónież wskazać własną listę nazw kolumn, które mają być zwrócone w kolekcji:
 
     $roles = DB::table('roles')->pluck('title', 'name');
 
@@ -94,9 +94,9 @@ If you would like to retrieve a Collection containing the values of a single col
     }
 
 <a name="chunking-results"></a>
-### Chunking Results
+### Porcjowanie Wyników
 
-If you need to work with thousands of database records, consider using the `chunk` method. This method retrieves a small chunk of the results at a time and feeds each chunk into a `Closure` for processing. This method is very useful for writing [Artisan commands](/docs/{{version}}/artisan) that process thousands of records. For example, let's work with the entire `users` table in chunks of 100 records at a time:
+Jeśli pracujesz z tysiącami rekordów danych, rozważ użycie metody `chunk`. Ta metoda pobiera każdorazowo  małą porcję wyników i wprwadza każdą część do  `Closure` w celu dalszego przetwarzania. Ta metoda jest bardzo przydatna podczas korzystania z [komend Artisan ](/docs/{{version}}/artisan) kiedy przetwarzasz tysiace rekordów. Na przykład, spróbujmy przetworzyć całość tabeli `users` w porcjach po 100 rekordów:
 
     DB::table('users')->orderBy('id')->chunk(100, function ($users) {
         foreach ($users as $user) {
@@ -104,7 +104,7 @@ If you need to work with thousands of database records, consider using the `chun
         }
     });
 
-You may stop further chunks from being processed by returning `false` from the `Closure`:
+Możesz zatrzymac przetwarzanie kolejnych partii zwracajac `false` w obrzarze `Closure`:
 
     DB::table('users')->orderBy('id')->chunk(100, function ($users) {
         // Process the records...
@@ -113,7 +113,7 @@ You may stop further chunks from being processed by returning `false` from the `
     });
 
 <a name="aggregates"></a>
-### Aggregates
+### Agregacje
 
 The query builder also provides a variety of aggregate methods such as `count`, `max`, `min`, `avg`, and `sum`. You may call any of these methods after constructing your query:
 
