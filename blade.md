@@ -1,7 +1,7 @@
-# Blade Templates
+# Szanlony Blade
 
-- [Introduction](#introduction)
-- [Template Inheritance](#template-inheritance)
+- [Wprowadzenie](#introduction)
+- [Dziedziczenie szabkonów](#template-inheritance)
     - [Defining A Layout](#defining-a-layout)
     - [Extending A Layout](#extending-a-layout)
 - [Components & Slots](#components-and-slots)
@@ -22,17 +22,18 @@
     - [Custom If Statements](#custom-if-statements)
 
 <a name="introduction"></a>
-## Introduction
+## Wprowadzenie
 
-Blade is the simple, yet powerful templating engine provided with Laravel. Unlike other popular PHP templating engines, Blade does not restrict you from using plain PHP code in your views. In fact, all Blade views are compiled into plain PHP code and cached until they are modified, meaning Blade adds essentially zero overhead to your application. Blade view files use the `.blade.php` file extension and are typically stored in the `resources/views` directory.
+Blade jest prostym lecz potężnym narzędziem przetwarzania szablonów w Laravelu. W przeciwieństwie do innych popularnych systemów przetwarzania szablonówx, Blade nie ogranicza możliwości używania czystego kodu PHP w widokach. W rzeczywistości wszystkie widoki Blade są skompilowane do czytego kodu PHP i przechowywane w pamięci podręcznej, dopóki nie zostaną zmodyfikowane, co oznacza, że Blade nie dodaje dodatkowego narzutu (zero overhead) Twojej aplikacji. Bladowe pliki widoków używają rozszerzenia `.blade.php` i są zazwyczaj umieszczane w katalogu `resources/views`.
 
 <a name="template-inheritance"></a>
-## Template Inheritance
+## Dziedziczenie szabkonów
 
 <a name="defining-a-layout"></a>
-### Defining A Layout
+### Definiowanie Layoutu
 
-Two of the primary benefits of using Blade are _template inheritance_ and _sections_. To get started, let's take a look at a simple example. First, we will examine a "master" page layout. Since most web applications maintain the same general layout across various pages, it's convenient to define this layout as a single Blade view:
+Dwoma głównymi zaletami stosowania Blade są  _template inheritance_ and _sections_. Aby zacząć, przyjrzyjmy się prostemu przykładowi. Najpierw zbadamy układ strony głównej.
+W przypadku gdy większość stron naszej aplikacji oparta jest o taki sam charakterystyczny układ, na różnych podstronach, wygodnie jest zdefiniowanie tego układu jako pojedynczego widoku blade:
 
     <!-- Stored in resources/views/layouts/app.blade.php -->
 
@@ -51,14 +52,14 @@ Two of the primary benefits of using Blade are _template inheritance_ and _secti
         </body>
     </html>
 
-As you can see, this file contains typical HTML mark-up. However, take note of the `@section` and `@yield` directives. The `@section` directive, as the name implies, defines a section of content, while the `@yield` directive is used to display the contents of a given section.
+Jak widzisz, ten plik zawiera typową składnię HTML. Należy jednak pamiętać o dyrektywach @section i @yield. Dyrektywa @section, jak sama nazwa wskazuje, definiuje sekcję zawartości, podczas gdy dyrektywa @yield jest używana do wyświetlania zawartości takiej sekcji.
 
-Now that we have defined a layout for our application, let's define a child page that inherits the layout.
+Teraz, gdy mam zdefiniowany układ dla naszej aplikacji, określmy stronę podrzędną, która odziedziczy ten układ.
 
 <a name="extending-a-layout"></a>
 ### Extending A Layout
 
-When defining a child view, use the Blade `@extends` directive to specify which layout the child view should "inherit". Views which extend a Blade layout may inject content into the layout's sections using `@section` directives. Remember, as seen in the example above, the contents of these sections will be displayed in the layout using `@yield`:
+Podczas tworzenia widoku podrzędnego użyj dyrektywy Blade @extends, aby określić, jaki układ w tworzonym widoku ma zostać "odziedziczony". Widoki, podrzedne które rozszerzają głowny układ, mogą do niego wstrzyknąc zawierać swoich sekcji opisanych dyrektywami `@section`. Jak pamietasz z powyższego przykładu, zawartość tych sekcji zostanie wyświetlona w szablonie w miejscach oznaczonych dyrektywami @yield:
 
     <!-- Stored in resources/views/child.blade.php -->
 
@@ -67,7 +68,7 @@ When defining a child view, use the Blade `@extends` directive to specify which 
     @section('title', 'Page Title')
 
     @section('sidebar')
-        @@parent
+        @parent
 
         <p>This is appended to the master sidebar.</p>
     @endsection
@@ -76,20 +77,21 @@ When defining a child view, use the Blade `@extends` directive to specify which 
         <p>This is my body content.</p>
     @endsection
 
-In this example, the `sidebar` section is utilizing the `@@parent` directive to append (rather than overwriting) content to the layout's sidebar. The `@@parent` directive will be replaced by the content of the layout when the view is rendered.
+W tym przykładzie sekcja `sidebar` używa dyrektywy `@parent` aby dołączyć (bez nadpisania) swoją zawartość do sekcji sidebara szablonu. W miejscu gdzie jest zadeklarowana dyrektywa `@parent` zostanie umieszczona zawartość sekcji z głownego szablonu w chwili gdy szablon będzie renderowany.
 
-> {tip} Contrary to the previous example, this `sidebar` section ends with `@endsection` instead of `@show`. The `@endsection` directive will only define a section while `@show` will define and **immediately yield** the section.
+> {wskazówka} W przeciwieństwie do uwcześniejszego przykładu, w widoku podrzędnym sekcja `sidebar` kończy się symbolem `@endsection` zamiast `@show` jak było to w szblnie nadrzędnym. Dyrektywa `@endsection` definiuje tylko sekcję, podczas gdy dyrektywa `@show` będzie definiować zawartość sekcji i jednocześnie ją wyświtlać (***coś jak `@endsection` i `@yield` w jednym***). 
 
-Blade views may be returned from routes using the global `view` helper:
+
+Widoki Blade mogą być zwracaje w routingu z pomoca globalnego helpera `view`:
 
     Route::get('blade', function () {
         return view('child');
     });
 
 <a name="components-and-slots"></a>
-## Components & Slots
+## Komponenty i Gniazda
 
-Components and slots provide similar benefits to sections and layouts; however, some may find the mental model of components and slots easier to understand. First, let's imagine a reusable "alert" component we would like to reuse throughout our application:
+Komponenty i Gniazda zapewniają podobną funkcjonalność do sekcji i szablonów; however, some may find the mental model of components and slots easier to understand. Po pierwsze, wyobraźmy sobie powtarzalny element "alert", który chcielibyśmy wielokrotnie wykorzystać na przestrzni całej naszej aplikacji:
 
     <!-- /resources/views/alert.blade.php -->
 
@@ -97,13 +99,13 @@ Components and slots provide similar benefits to sections and layouts; however, 
         {{ $slot }}
     </div>
 
-The `{{ $slot }}` variable will contain the content we wish to inject into the component. Now, to construct this component, we can use the `@component` Blade directive:
+Zmienna `{{ $slot }}` będzie zawwierać zawartość, którą będziemy chcieli wstrzyknąć do komponentu. Teraz utwórzmy ten  komponent używajac dyrektywy`@component`:
 
     @component('alert')
         <strong>Whoops!</strong> Something went wrong!
     @endcomponent
 
-Sometimes it is helpful to define multiple slots for a component. Let's modify our alert component to allow for the injection of a "title". Named slots may be displayed by simply "echoing" the variable that matches their name:
+Czasami bywa pomocne zdefiniowanie kilku odrębnych gniazd dla komponentu. Zmodyfikujmy nasz kod alertu, aby umożliwić wstawienie "tytułu". Ponazywane gniazda mogą być prosto wyświetlane przez wywołanie zmienenj, która pasuje do ich nazwy:
 
     <!-- /resources/views/alert.blade.php -->
 
@@ -113,7 +115,7 @@ Sometimes it is helpful to define multiple slots for a component. Let's modify o
         {{ $slot }}
     </div>
 
-Now, we can inject content into the named slot using the `@slot` directive. Any content not within a `@slot` directive will be passed to the component in the `$slot` variable:
+Teraz możemy zadeklarować wstrzykiwaną zawartość do uprzednio przygotowanego gniazda, używajac dyrektywy `@slot` opisanego konkretną nazwą. Każda zawartość komponentu, która nie znajdzie się w dyrektywie `@slot` będzie przekazwyana wprost do gniazda określanego mianem zmiennej `$slot`:
 
     @component('alert')
         @slot('title')
