@@ -18,8 +18,8 @@
     - [Rendering Views For Collections](#rendering-views-for-collections)
 - [Stacks](#stacks)
 - [Service Injection](#service-injection)
-- [Extending Blade](#extending-blade)
-    - [Custom If Statements](#custom-if-statements)
+- [Rozszerzenia Blade](#extending-blade)
+    - [Niestandardowe instrukcje If](#custom-if-statements)
 
 <a name="introduction"></a>
 ## Wprowadzenie
@@ -215,7 +215,7 @@ Oprócz wymienionych dyrektyw warunkowych, dyrektywy `@isset` i `@empty` można 
         // $records is "empty"...
     @endempty
 
-#### Authentication Shortcuts
+#### Skróty Autoryzacji
 
 Dyrektywy `@auth` i `@guest` mogą być użyte do szybkiego określenia czy obecny użytkowik jest autoryzowany czy pozostaje  tylko gościem:
 
@@ -382,28 +382,32 @@ Jeśli chcesz, dołaczyć dyrektywą `@include` widok w zależności od jakiego�
 <a name="rendering-views-for-collections"></a>
 ### Rendering Views For Collections
 
-You may combine loops and includes into one line with Blade's `@each` directive:
+Możesz połączyć funkcje pętli i widoku dla każdej interaacji w pętli takim jednoliniowym zapisem używającym dyrektywy `@each`:
 
     @each('view.name', $jobs, 'job')
 
-The first argument is the view partial to render for each element in the array or collection. The second argument is the array or collection you wish to iterate over, while the third argument is the variable name that will be assigned to the current iteration within the view. So, for example, if you are iterating over an array of `jobs`, typically you will want to access each job as a `job` variable within your view partial. The key for the current iteration will be available as the `key` variable within your view partial.
+Pierwszym argumentem jest szablon widoku przyporządkowywany do każdego elemnetu tablicy. Drugim elementem jest tablica lub kolekcja po której będzies się odbywa c iteracja, natomiast trzecim argumentem jest nazwa zmiennej dostępnej z poziomu przyporzdkowawanego widoku. 
+Tak więc, dla przykładu, jeśli iterrujesz tablicę `jobs`, możesz mieć dostęp w twoim widoku do każdego z elementówtej tej tablicyodwołując się do zmiennej  'job'. Natomiast, klucz bieżącej iteracji będzie dostępny z poziomu widoku jako zmienna `key`. 
 
-You may also pass a fourth argument to the `@each` directive. This argument determines the view that will be rendered if the given array is empty.
+Możesz również przekazać czwarty argument do  dyrektywy @each. Ten argument określa widok, który zostanie wyświetlony, jeśli wskazana tablica jest pusta.
 
     @each('view.name', $jobs, 'job', 'view.empty')
 
-> {note} Views rendered via `@each` do not inherit the variables from the parent view. If the child view requires these variables, you should use `@foreach` and `@include` instead.
+> {wskazówka} Widoki renderowane za pośrednictwem @each nie dziedziczą zmiennych z widoku nadrzędnego. Jeśli widok podrzędny wymaga tych zmiennych, powinieneś użyć @foreach i @include.
+
 
 <a name="stacks"></a>
-## Stacks
+## Stosy
 
-Blade allows you to push to named stacks which can be rendered somewhere else in another view or layout. This can be particularly useful for specifying any JavaScript libraries required by your child views:
+Blade allows you to push to named stacks which can be rendered somewhere else in another view or layout. This can be particularly useful for specifying any JavaScript libraries required by your child views
+
+Blade umożliwia osadzenie wyrywkóe kodu w ponazywanych indywidualnie stosach, które można wyświetlać gdziekolwiek w obszarze róznych widoków tego samego layoutu. Może to być szczególnie przydatne do podpinania bibliotek JavaScript wymaganych przez widoki podrzędne:
 
     @push('scripts')
         <script src="/example.js"></script>
     @endpush
 
-You may push to a stack as many times as needed. To render the complete stack contents, pass the name of the stack to the `@stack` directive:
+Możesz osadzić je w stosach tak wiele razy ile tylko potrzbujesz. Any wyświetlić zawartość strosu, przekaż nazwę stosu do dyrektywy `@stack`:
 
     <head>
         <!-- Head Contents -->
@@ -412,9 +416,9 @@ You may push to a stack as many times as needed. To render the complete stack co
     </head>
 
 <a name="service-injection"></a>
-## Service Injection
+## Wstrzykiwanie Usług
 
-The `@inject` directive may be used to retrieve a service from the Laravel [service container](/docs/{{version}}/container). The first argument passed to `@inject` is the name of the variable the service will be placed into, while the second argument is the class or interface name of the service you wish to resolve:
+Dyrektywa `@inject` moze być użyta do pobiernia usług z Laravel [service container](/docs/{{version}}/container). Pierwszym argumentem przekazywanym w `@inject` jest nazwa zmiennej do której zawartość usługi będzie pobierania, natomiast drygi argumnet jest kalsą lub nazwą interfejsu usługi której chesz użyć:
 
     @inject('metrics', 'App\Services\MetricsService')
 
@@ -423,11 +427,11 @@ The `@inject` directive may be used to retrieve a service from the Laravel [serv
     </div>
 
 <a name="extending-blade"></a>
-## Extending Blade
+## Rozszerzenia Blade
 
-Blade allows you to define your own custom directives using the `directive` method. When the Blade compiler encounters the custom directive, it will call the provided callback with the expression that the directive contains.
+Blade pozwala definiować własne dyrektywy używając metody `directive`. Kiedy kompilator  napotka niestandardową dyrektywę, odwołuje się do funkcji zwrotnej z wyrażeniem zawierajacym tą dyrektywę.  
 
-The following example creates a `@datetime($var)` directive which formats a given `$var`, which should be an instance of `DateTime`:
+Nastepujacy przykad tworzy dyrektywę  `@datetime($var)` z formatujacą znienneą `$var`, która powina być isntacją `DateTime`:
 
     <?php
 
@@ -461,16 +465,17 @@ The following example creates a `@datetime($var)` directive which formats a give
         }
     }
 
-As you can see, we will chain the `format` method onto whatever expression is passed into the directive. So, in this example, the final PHP generated by this directive will be:
+Jak możesz zobaczyć, użyliśmy metody `format` na dowolnym  wyrażeniu, które zostało skierowane do dyrektywy. Zatem w tym przykładzie firlanie PHP wygenerowany przezdyrektywe będzie miał następujacą postać:
 
     <?php echo ($var)->format('m/d/Y H:i'); ?>
 
-> {note} After updating the logic of a Blade directive, you will need to delete all of the cached Blade views. The cached Blade views may be removed using the `view:clear` Artisan command.
+> {uwaga} Po aktualziacji logiki dyrektyw, będziesz potrzbował usunąć całą zawartość cach'owanych widoków. The cached Blade views may be removed using the `view:clear` Artisan command.
 
 <a name="custom-if-statements"></a>
-### Custom If Statements
+### Niestandardowe Instrukcje If
 
-Programming a custom directive is sometimes more complex than necessary when defining simple, custom conditional statements. For that reason, Blade provides a `Blade::if` method which allows you to quickly define custom conditional directives using Closures. For example, let's define a custom conditional that checks the current application environment. We may do this in the `boot` method of our `AppServiceProvider`:
+Programowanie niestandardowych dyrektyw, jest czasami  bardziej złożone niż jest to konieczne pdczas   definiowania prostych, niestandardowych instrukcji warunkowych.
+Z tego powodu Blade udostępnia metodę `Blade :: if`, która umożliwia szybkie definiowanie niestandardowych dyrektyw warunkowych za pomocą funkcji domknięć. Na przykład określmy niestandardowy warunek, który sprawdza obecne środowisko aplikacji. Możemy to zrobić metodą `boot` naszego `AppServiceProvider`:
 
     use Illuminate\Support\Facades\Blade;
 
@@ -486,7 +491,7 @@ Programming a custom directive is sometimes more complex than necessary when def
         });
     }
 
-Once the custom conditional has been defined, we can easily use it on our templates:
+Po zdefiniowaniu niestandardowego warunku możemy go łatwo użyć w naszych szablonach:
 
     @env('local')
         // The application is in the local environment...
