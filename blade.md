@@ -353,9 +353,9 @@ W niektórych sytuacjach istnieje potrzeba umieszczenia kodu PHP w widokach. Mo�
 > {wskazówka} Chociaż Blade udostępnia tę funkcję, używanie jej często może być sygnałem, że zbyt dużo logiki umieszczasz w szablonie.
 
 <a name="including-sub-views"></a>
-## Including Sub-Views
+## Dołączanie Sub-Widoków
 
-Blade's `@include` directive allows you to include a Blade view from within another view. All variables that are available to the parent view will be made available to the included view:
+Dyrektywa `@include` pozwala ci na  dołączenie widoku w innym widoku. Wszystkie zmienne, które są dostępne dla widoku nadrzędnego, zostaną udostępnione do dołączonego widoku:
 
     <div>
         @include('shared.errors')
@@ -365,19 +365,19 @@ Blade's `@include` directive allows you to include a Blade view from within anot
         </form>
     </div>
 
-Even though the included view will inherit all data available in the parent view, you may also pass an array of extra data to the included view:
+Mimo, że widok włączony dziedziczy wszystkie dane dostępne w widoku nadrzędnym, można do niego przekazać również szereg dodatkowych danych w postaci tablicy:
 
     @include('view.name', ['some' => 'data'])
 
-Of course, if you attempt to `@include` a view which does not exist, Laravel will throw an error. If you would like to include a view that may or may not be present, you should use the `@includeIf` directive:
+Oczywiście, jeśli próbujesz dołączyć dyrektywą `@include` widok, który nie istnieje, Laravel zgłosi błąd. Jeśli istnieje potrzba uwzględnienia widoku, który może nie być dostępny, powinieneś użyć dyrektywy warunkowej `@includeIf`:
 
     @includeIf('view.name', ['some' => 'data'])
 
-If you would like to `@include` a view depending on a given boolean condition, you may use the `@includeWhen` directive:
+Jeśli chcesz, dołaczyć dyrektywą `@include` widok w zależności od jakiegoś warunku, możesz użyć dyrektywy @includeWhen:
 
     @includeWhen($boolean, 'view.name', ['some' => 'data'])
 
-> {note} You should avoid using the `__DIR__` and `__FILE__` constants in your Blade views, since they will refer to the location of the cached, compiled view.
+> {uwaga} Powinieneś unikać stałych `__DIR__` i `__FILE__` w widokach Blade, ponieważ odnoszą się one do lokalizacji buforowanego, skompilowanego widoku. 
 
 <a name="rendering-views-for-collections"></a>
 ### Rendering Views For Collections
