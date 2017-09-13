@@ -2,12 +2,12 @@
 
 - [Wprowadzenie](#introduction)
 - [Dziedziczenie szabkonów](#template-inheritance)
-    - [Defining A Layout](#defining-a-layout)
-    - [Extending A Layout](#extending-a-layout)
-- [Components & Slots](#components-and-slots)
-- [Displaying Data](#displaying-data)
-    - [Blade & JavaScript Frameworks](#blade-and-javascript-frameworks)
-- [Control Structures](#control-structures)
+    - [Definiowanie Layoutu](#defining-a-layout)
+    - [Rozbudowa Layoutu](#extending-a-layout)
+- [Komponenty i Gniazda](#components-and-slots)
+- [Wyświetlanie danych](#displaying-data)
+    - [Blade i Frameworki JavaScript ](#blade-and-javascript-frameworks)
+- [Struktury Kontrolne](#control-structures)
     - [If Statements](#if-statements)
     - [Switch Statements](#switch-statements)
     - [Loops](#loops)
@@ -57,7 +57,7 @@ Jak widzisz, ten plik zawiera typową składnię HTML. Należy jednak pamiętać
 Teraz, gdy mam zdefiniowany układ dla naszej aplikacji, określmy stronę podrzędną, która odziedziczy ten układ.
 
 <a name="extending-a-layout"></a>
-### Extending A Layout
+### Rozbudowa Layoutów
 
 Podczas tworzenia widoku podrzędnego użyj dyrektywy Blade @extends, aby określić, jaki układ w tworzonym widoku ma zostać "odziedziczony". Widoki, podrzedne które rozszerzają głowny układ, mogą do niego wstrzyknąc zawierać swoich sekcji opisanych dyrektywami `@section`. Jak pamietasz z powyższego przykładu, zawartość tych sekcji zostanie wyświetlona w szablonie w miejscach oznaczonych dyrektywami @yield:
 
@@ -91,7 +91,7 @@ Widoki Blade mogą być zwracaje w routingu z pomoca globalnego helpera `view`:
 <a name="components-and-slots"></a>
 ## Komponenty i Gniazda
 
-Komponenty i Gniazda zapewniają podobną funkcjonalność do sekcji i szablonów; however, some may find the mental model of components and slots easier to understand. Po pierwsze, wyobraźmy sobie powtarzalny element "alert", który chcielibyśmy wielokrotnie wykorzystać na przestrzni całej naszej aplikacji:
+Komponenty i Gniazda zapewniają podobną funkcjonalność do sekcji i szablonów; jednakże ktoś może poszukiwać przykładów zastosowania komponentów i gniazd dla lepszego ich zrozumienia. Na wstępie, wyobraźmy sobie powtarzalny element "alert", który chcielibyśmy wielokrotnie wykorzystać na przestrzni całej naszej aplikacji:
 
     <!-- /resources/views/alert.blade.php -->
 
@@ -99,13 +99,13 @@ Komponenty i Gniazda zapewniają podobną funkcjonalność do sekcji i szablonó
         {{ $slot }}
     </div>
 
-Zmienna `{{ $slot }}` będzie zawwierać zawartość, którą będziemy chcieli wstrzyknąć do komponentu. Teraz utwórzmy ten  komponent używajac dyrektywy`@component`:
+Zmienna `{{ $slot }}` będzie zawierać tę zawartość, którą będziemy chcieli wstrzyknąć do komponentu w chwili jego osadzania. Teraz utwórzmy w kodzie miejsce na ten komponent używajac dyrektywy`@component`:
 
     @component('alert')
         <strong>Whoops!</strong> Something went wrong!
     @endcomponent
 
-Czasami bywa pomocne zdefiniowanie kilku odrębnych gniazd dla komponentu. Zmodyfikujmy nasz kod alertu, aby umożliwić wstawienie "tytułu". Ponazywane gniazda mogą być prosto wyświetlane przez wywołanie zmienenj, która pasuje do ich nazwy:
+Czasami bywa pomocne zdefiniowanie kilku odrębnych gniazd w komponencie. Zmodyfikujmy nasz kod alertu, aby umożliwić wstawienie "tytułu". Ponazywane gniazda mogą być prosto wyświetlane przez zmiene odwołujące się do ich nazw:
 
     <!-- /resources/views/alert.blade.php -->
 
@@ -115,7 +115,7 @@ Czasami bywa pomocne zdefiniowanie kilku odrębnych gniazd dla komponentu. Zmody
         {{ $slot }}
     </div>
 
-Teraz możemy zadeklarować wstrzykiwaną zawartość do uprzednio przygotowanego gniazda, używajac dyrektywy `@slot` opisanego konkretną nazwą. Każda zawartość komponentu, która nie znajdzie się w dyrektywie `@slot` będzie przekazwyana wprost do gniazda określanego mianem zmiennej `$slot`:
+Teraz możemy zadeklarować wstrzykiwaną zawartość do uprzednio przygotowanego gniazda, używajac dyrektywy `@slot` opatrzonej  nazwą. Natomiast każda zawartość, która nie znajdzie się w dyrektywie `@slot` będzie przekazwyana wprost do gniazda określanego zmienną `$slot`:
 
     @component('alert')
         @slot('title')
@@ -125,55 +125,55 @@ Teraz możemy zadeklarować wstrzykiwaną zawartość do uprzednio przygotowaneg
         You are not allowed to access this resource!
     @endcomponent
 
-#### Passing Additional Data To Components
+#### Przekazywanie Dodatkowych Danych do Komponentów
 
-Sometimes you may need to pass additional data to a component. For this reason, you can pass an array of data as the second argument to the `@component` directive. All of the data will be made available to the component template as variables:
+Czasami możesz potrzbowac przekazac dodakowe dane do komponnetu. W tym celu możesz przekazać tablicę jako drugi argument dyrektywy @component. Wszystkie dane zostaną będą dostępne w szablonu komponentów jako zmienne:
 
     @component('alert', ['foo' => 'bar'])
         ...
     @endcomponent
 
 <a name="displaying-data"></a>
-## Displaying Data
+## Wyświetlanie Danych
 
-You may display data passed to your Blade views by wrapping the variable in curly braces. For example, given the following route:
+Możesz wyświetlić dane przekazywane fo twojego widoku Blade przez owinięcie zmiennej w nawiasy kwadratowe. Dla przykładu, weźmy nastepujacy routing:
 
     Route::get('greeting', function () {
         return view('welcome', ['name' => 'Samantha']);
     });
 
-You may display the contents of the `name` variable like so:
+Możesz wyświetlić zawartość zmiennej `name` w taki sposób:
 
     Hello, {{ $name }}.
 
-Of course, you are not limited to displaying the contents of the variables passed to the view. You may also echo the results of any PHP function. In fact, you can put any PHP code you wish inside of a Blade echo statement:
+Oczywiście, nie jesteś ogranicznay nie jest ograniczony do wyświetlania jedynie zawartości zmiennych przekazanych do widoku. Możesz również wyświetlać wynik dowolnej funkcji PHP. W rzeczywistości można umieścić dowolny kod PHP jaki zechcesz, osadzajac go w szablonu Blade w deklaracji `echo` oznaczanej podwójnymi nawiasami klamrowymi `{{ }}`:
 
     The current UNIX timestamp is {{ time() }}.
 
-> {note} Blade `{{ }}` statements are automatically sent through PHP's `htmlspecialchars` function to prevent XSS attacks.
+> {wskazówka} W Blade zawartość `{{ }}` jest automatycnzie przekazywana przez PHP-owa funkcję `htmlspecialchars` aby zabespieczyć cię przed atakami XSS.
 
-#### Displaying Unescaped Data
+#### Wyświetlanie Nieprzefiltrowanych Danych
 
-By default, Blade `{{ }}` statements are automatically sent through PHP's `htmlspecialchars` function to prevent XSS attacks. If you do not want your data to be escaped, you may use the following syntax:
+Domyłśnie, w Blade zawartość `{{ }}`  jest automatycnzie przekazywana przez PHP-owa funkcję `htmlspecialchars` aby zabespieczyć się przed atakami XSS. jeśłi jednak nie chcesz swoich danych wyjściowych filtrować, mozesz użyć następujacej składi:
 
     Hello, {!! $name !!}.
 
-> {note} Be very careful when echoing content that is supplied by users of your application. Always use the escaped, double curly brace syntax to prevent XSS attacks when displaying user supplied data.
+> {wskazówka} Zachowaj ostrożność gdy wyświetlasz treści przekazywane przez użytkowników. Wtedy zawsze używaj wyników filrowanych otrzymywanych w wyniku użycia notacji z podwójnymi nawiasami klamrowymi.
 
 <a name="blade-and-javascript-frameworks"></a>
-### Blade & JavaScript Frameworks
+### Blade i Frameworki JavaScript 
 
-Since many JavaScript frameworks also use "curly" braces to indicate a given expression should be displayed in the browser, you may use the `@` symbol to inform the Blade rendering engine an expression should remain untouched. For example:
+Ponieważ wiele frameworków JavaScript używa klamrowych nawiasów, do identyfikacji dynamicznych wyrażeń przetwarzanych przez przeglądarki, możesz użyć symbolu @, aby poinformować silnik renderujący Blade, że wyrażenie to powinno pozostać nieprzetworzone. Na przykład:
 
     <h1>Laravel</h1>
 
     Hello, @{{ name }}.
 
-In this example, the `@` symbol will be removed by Blade; however, `{{ name }}` expression will remain untouched by the Blade engine, allowing it to instead be rendered by your JavaScript framework.
+W tym przykładzie, stymbol `@` będzie usuniety przez parser Blade, jednak samo wyrażenie `{{ name }}` pozostanie bez zmian, pozwalając na jego przetworzenie przez framework JavaScriptu.
 
-#### The `@verbatim` Directive
+#### Dyrektywa `@verbatim` 
 
-If you are displaying JavaScript variables in a large portion of your template, you may wrap the HTML in the `@verbatim` directive so that you do not have to prefix each Blade echo statement with an `@` symbol:
+Jeśli musisz wyświetlić większu fragment JavaScriptu w obszarze twojego szablonu, możesz objąć cały tej wycinek HTML w dyrektywę `@verbatim`, co zwolni cię z konieczności poprzedzania każdej zmiennej w nawiasach klamrowych symbolem: `@`:
 
     @verbatim
         <div class="container">
@@ -182,14 +182,14 @@ If you are displaying JavaScript variables in a large portion of your template, 
     @endverbatim
 
 <a name="control-structures"></a>
-## Control Structures
+## Struktury Kontrolne
 
-In addition to template inheritance and displaying data, Blade also provides convenient shortcuts for common PHP control structures, such as conditional statements and loops. These shortcuts provide a very clean, terse way of working with PHP control structures, while also remaining familiar to their PHP counterparts.
+Oprócz dziedziczenia szablonów i wyświetlania danych, Blade zapewnia także wygodne skróty dla podstawowych struktur kontroli PHP, takich jak instrukcje warunkowe i pętle. Te skróty zapewniają bardzo czysty, zwiezły sposób pracy z strukturami kontroli znanymi z PHP.
 
 <a name="if-statements"></a>
-### If Statements
+### Instrukcja If 
 
-You may construct `if` statements using the `@if`, `@elseif`, `@else`, and `@endif` directives. These directives function identically to their PHP counterparts:
+Możesz zbudować instrukcję warunkową `if` używając dyrektyw `@if`, `@elseif`, `@else`, i `@endif`. Te dyrektywy działają identycznie jak ich odpowiedniki PHP:
 
     @if (count($records) === 1)
         I have one record!
@@ -199,13 +199,13 @@ You may construct `if` statements using the `@if`, `@elseif`, `@else`, and `@end
         I don't have any records!
     @endif
 
-For convenience, Blade also provides an `@unless` directive:
+Dla wygody, Blade oferuje ponadto dyrektywę `@unless`:
 
     @unless (Auth::check())
         You are not signed in.
     @endunless
 
-In addition to the conditional directives already discussed, the `@isset` and `@empty` directives may be used as convenient shortcuts for their respective PHP functions:
+Oprócz wymienionych dyrektyw warunkowych, dyrektywy `@isset` i `@empty` można używać jako wygodne skróty dla ich  odpoiwdników w PHP:
 
     @isset($records)
         // $records is defined and is not null...
@@ -217,7 +217,7 @@ In addition to the conditional directives already discussed, the `@isset` and `@
 
 #### Authentication Shortcuts
 
-The `@auth` and `@guest` directives may be used to quickly determine if the current user is authenticated or is a guest:
+Dyrektywy `@auth` i `@guest` mogą być użyte do szybkiego określenia czy obecny użytkowik jest autoryzowany czy pozostaje  tylko gościem:
 
     @auth
         // The user is authenticated...
@@ -228,9 +228,9 @@ The `@auth` and `@guest` directives may be used to quickly determine if the curr
     @endguest
 
 <a name="switch-statements"></a>
-### Switch Statements
+### Instrukcje Switch
 
-Switch statements can be constructed using the `@switch`, `@case`, `@break`, `@default` and `@endswitch` directives:
+Instrukcje switch mogą być konstruowane w oparciu o dyrektywy: `@switch`, `@case`, `@break`, `@default` i `@endswitch`:
 
     @switch($i)
         @case(1)
@@ -246,9 +246,9 @@ Switch statements can be constructed using the `@switch`, `@case`, `@break`, `@d
     @endswitch
 
 <a name="loops"></a>
-### Loops
+### Pętle
 
-In addition to conditional statements, Blade provides simple directives for working with PHP's loop structures. Again, each of these directives functions identically to their PHP counterparts:
+Oprócz instrukcji warunkowegych, Blade oferuje proste instrukcje do pracy z strukturami pętli znanymi z PHP. Ponownie, każda z tych dyrektyw działa identycznie jak ich odpowiednik w PHP:
 
     @for ($i = 0; $i < 10; $i++)
         The current value is {{ $i }}
@@ -268,9 +268,9 @@ In addition to conditional statements, Blade provides simple directives for work
         <p>I'm looping forever.</p>
     @endwhile
 
-> {tip} When looping, you may use the [loop variable](#the-loop-variable) to gain valuable information about the loop, such as whether you are in the first or last iteration through the loop.
+> {wskazówka} Podczas wykonywania pętli możesz użyć [predefiniowanych zmiennych pęti](#the-loop-variable) aby uzyskać dodatkowe informacje, np. czy pętla znajduje się w pierwszej lub ostatniej itercji.
 
-When using loops you may also end the loop or skip the current iteration:
+Kiedy używasz petki możesz również przerwać proces lub przeskoczyć bieżącą iterację:
 
     @foreach ($users as $user)
         @if ($user->type == 1)
@@ -284,7 +284,7 @@ When using loops you may also end the loop or skip the current iteration:
         @endif
     @endforeach
 
-You may also include the condition with the directive declaration in one line:
+Możesz również wprowadzić warunki określające kiedy dana dyrektywa ma zastosowanie:
 
     @foreach ($users as $user)
         @continue($user->type == 1)
@@ -295,9 +295,9 @@ You may also include the condition with the directive declaration in one line:
     @endforeach
 
 <a name="the-loop-variable"></a>
-### The Loop Variable
+### Zmienne Pętli
 
-When looping, a `$loop` variable will be available inside of your loop. This variable provides access to some useful bits of information such as the current loop index and whether this is the first or last iteration through the loop:
+Kiedy przetwarzasz petlę, zmienna`$loop` będzie  dostepna wewnatrz twojej pętli. Ta zmienan pozwala na dostęp do kilkku użytecznych informacji takich jak obecny index iteracji, i czy jest to pierwsza lub ostatnia itercja tej pętli:
 
     @foreach ($users as $user)
         @if ($loop->first)
@@ -311,7 +311,7 @@ When looping, a `$loop` variable will be available inside of your loop. This var
         <p>This is user {{ $user->id }}</p>
     @endforeach
 
-If you are in a nested loop, you may access the parent loop's `$loop` variable via the `parent` property:
+Jeżeli wykonujesz pętlę zagnieżdżoną, możesz mieć dostep do nadrzednej zemiennej `$loop` przez właściwość `parent`:
 
     @foreach ($users as $user)
         @foreach ($user->posts as $post)
@@ -321,36 +321,36 @@ If you are in a nested loop, you may access the parent loop's `$loop` variable v
         @endforeach
     @endforeach
 
-The `$loop` variable also contains a variety of other useful properties:
+Zmienna `$loop` może przekazywać różne użyteczne własciwości:
 
-Property  | Description
+Właściwość  | Opis
 ------------- | -------------
-`$loop->index`  |  The index of the current loop iteration (starts at 0).
-`$loop->iteration`  |  The current loop iteration (starts at 1).
-`$loop->remaining`  |  The iteration remaining in the loop.
-`$loop->count`  |  The total number of items in the array being iterated.
-`$loop->first`  |  Whether this is the first iteration through the loop.
-`$loop->last`  |  Whether this is the last iteration through the loop.
-`$loop->depth`  |  The nesting level of the current loop.
-`$loop->parent`  |  When in a nested loop, the parent's loop variable.
+`$loop->index`  |  Index obecnej iteracji (poczatek od 0).
+`$loop->iteration`  |  Obecna interacja (poczatek od 1).
+`$loop->remaining`  |  Ilość iteracji pozostających do dokończenia pętli.
+`$loop->count`  |  Ilość wszytkich elementó tablicy.
+`$loop->first`  |  Informacja czy jest to pierwsza iteracja w pętli.
+`$loop->last`  |  Informacja czy jest to ostania iteracja w pętli.
+`$loop->depth`  |  Poziom zagnieżdżenia obecnej pętli.
+`$loop->parent`  |  Dostęp do zmiennych z pętli nadrzędnej z pozycji  pętli zagieżdzonej.
 
 <a name="comments"></a>
 ### Comments
 
-Blade also allows you to define comments in your views. However, unlike HTML comments, Blade comments are not included in the HTML returned by your application:
+W szablonach Blade masz również możlwiość tworzenia komentarzy. Jednak w odrózniwniu od tradycyjnych komentarzy w dokumentach HTML, komentarze Blade nie dą dołączane do wynikowgo kodu HTML twojej apliakcji:
 
     {{-- This comment will not be present in the rendered HTML --}}
 
 <a name="php"></a>
 ### PHP
 
-In some situations, it's useful to embed PHP code into your views. You can use the Blade `@php` directive to execute a block of plain PHP within your template:
+W niektórych sytuacjach istnieje potrzeba umieszczenia kodu PHP w widokach. Możesz użyć dyrektywy `@php` do wykonania zwykłego bloku PHP w twoim szblonie:
 
     @php
         //
     @endphp
 
-> {tip} While Blade provides this feature, using it frequently may be a signal that you have too much logic embedded within your template.
+> {wskazówka} Chociaż Blade udostępnia tę funkcję, używanie jej często może być sygnałem, że zbyt dużo logiki umieszczasz w szablonie.
 
 <a name="including-sub-views"></a>
 ## Including Sub-Views
