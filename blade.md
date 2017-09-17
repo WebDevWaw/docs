@@ -160,6 +160,19 @@ Domyłśnie, w Blade zawartość `{{ }}`  jest automatycnzie przekazywana przez 
 
 > {wskazówka} Zachowaj ostrożność gdy wyświetlasz treści przekazywane przez użytkowników. Wtedy zawsze używaj wyników filrowanych otrzymywanych w wyniku użycia notacji z podwójnymi nawiasami klamrowymi.
 
+#### Rendering JSON
+
+Czasami możesz potrzbować przekazać tablicę do swojego widoku z zamiarem wyświetlania go jako JSON w celu możesz zainicjować dane w posatci zmiennej JavaScript:
+
+    <script>
+        var app = <?php json_encode($array); ?>;
+    </script>
+Zamiast ręcznie wywołać `json_encode`, możesz użyć dyrektywy `@json`:
+
+    <script>
+        var app = @json($array)
+    </script>
+
 <a name="blade-and-javascript-frameworks"></a>
 ### Blade i Frameworki JavaScript 
 
